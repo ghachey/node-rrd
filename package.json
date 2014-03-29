@@ -1,13 +1,26 @@
 {
   "name": "node-rrd",
   "description": "A NodeJS module to fetch data from RRD database file.",
-  "keywords": ["rrd", "round robin", "database"],
+  "keywords": [
+    "rrd",
+    "round robin",
+    "database"
+  ],
   "author": "Ghislain Hachey",
   "version": "0.0.1",
   "main": "./rrd.js",
-  "files": ["rrd.js"],
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/ghachey/node-rrd"
+  "files": [
+    "rrd.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ghachey/node-rrd"
+  },
+  "devDependencies": {
+    "should": "^3.2.0-beta1",
+    "mocha": "^1.18.2"
+  },
+  "dependencies": {
+    "underscore": "^1.6.0"
   }
 }
