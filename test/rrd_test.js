@@ -5,10 +5,8 @@ var rrd = require('../rrd');
 
 describe('Fetching data from Round Robin Databases', function(){
 
-	describe('fetchData', function(){
-		it('fetch data from RRD database and encapsulate it in a simple format', function(){
-
-      // Make test async...
+  describe('fetchData', function(){
+    it('fetches RRD data and encapsulates it in a simple format', function(done){
 
       var fetched_expected = [
         {
@@ -2470,14 +2468,14 @@ describe('Fetching data from Round Robin Databases', function(){
         }
       ];
 
-			var fetched_octets = rrd.fetchData('test/db/sample-octets-data.rrd', 'AVERAGE',
-                                           {'--start': '1395994500',
-                                            '--end': '1396076100'});
-			assert.deepEqual(fetched_octets, fetched_expected);
-		});
-	});
+      rrd.fetchData('test/db/sample-octets-data.rrd', 'AVERAGE',
+                    {'--start': '1395994500', '--end': '1396076100'},
+                    function(error, data) {
+                      assert.deepEqual(data, fetched_expected);
+                      done();
+                    });
+
+    });
+  });
 
 });
-
-
-

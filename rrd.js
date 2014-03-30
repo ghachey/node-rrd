@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 
 /**
  * @description
@@ -14,29 +14,42 @@ var spawn = require('child_process').spawn;
  *                 {start: '1395994500', end: '1396076100'}
  *
  */
-exports.fetchData = function (filename, CF, options) {
+exports.fetchData = function (filename, CF, options, callback) {
 
   // rrdtool executes with defaults, here are some more to complement
   var CF = CF || 'AVERAGE';
 
   var opts = _.flatten(_.zip(_.keys(options),_.values(options)));
-  var args = ['fetch', filename, CF].concat(opts);
+  // args for use with spawn when I'll be streaming rrd updates lives
+  var args = ['fetch', filename, CF].concat(opts);  // args for use with spawn...
+  // for now use exec and get fixed buffered output
+  var command = ['rrdtool'].concat(args).join(' ');
 
-  // Add callback...
+  var child = exec(command, function (error, stdout, stderr) {
 
-  var rrdfetch = spawn('rrdtool', args);
 
-  rrdfetch.stdout.on('data', function (data) {
-    console.log('stdout: ' + data);
+    var rawData = stdout.split('\n');
+    var fieldNames = rawData.shift().trim().split(' ');
+    var rawFiltered = _.filter(rawData,function(item) {if (item!='') {return item;}});
+
+    var data = _.map(rawFiltered, function(item){
+      if (item!='') {
+        var recordData = item.split(' ');
+        var record = {};
+        var timestamp = recordData.shift();
+        record['timestamp'] = timestamp.slice(0,timestamp.length-1);
+        record['fields'] = fieldNames;
+        record['data'] = _.map(recordData,function(item){return parseFloat(item);});
+        return record;
+      }
+    });
+
+    callback(null,data);
+
+    if (error !== null) {
+      callback(error,null);
+    }
+
   });
-
-  rrdfetch.stderr.on('data', function (data) {
-    console.log('stderr: ' + data);
-  });
-
-  rrdfetch.on('close', function (code) {
-    console.log('child process exited with code ' + code);
-  });
-
 
 };
