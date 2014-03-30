@@ -37,7 +37,7 @@ exports.fetchData = function (filename, CF, options, callback) {
         var recordData = item.split(' ');
         var record = {};
         var timestamp = recordData.shift();
-        record['timestamp'] = timestamp.slice(0,timestamp.length-1);
+        record['timestamp'] = parseFloat(timestamp.slice(0,timestamp.length-1));
         record['fields'] = fieldNames;
         record['data'] = _.map(recordData,function(item){return parseFloat(item);});
         return record;
