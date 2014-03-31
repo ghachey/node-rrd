@@ -14,7 +14,7 @@ var exec = require('child_process').exec;
  *                 {start: '1395994500', end: '1396076100'}
  *
  */
-exports.fetchData = function (filename, CF, options, callback) {
+exports.fetch = function (filename, CF, options, callback) {
 
   // rrdtool executes with defaults, here are some more to complement
   var CF = CF || 'AVERAGE';
@@ -45,6 +45,39 @@ exports.fetchData = function (filename, CF, options, callback) {
     });
 
     callback(null,data);
+
+    if (error !== null) {
+      callback(error,null);
+    }
+
+  });
+
+};
+
+/**
+ * @description
+ *
+ * Find the last update time of an RRD.
+ *
+ * @param {String} filename
+ *
+ */
+exports.last = function (filename, callback) {
+
+  // args for use with spawn when I'll be streaming rrd updates lives
+  var args = ['last', filename];  // args for use with spawn...
+  // for now use exec and get fixed buffered output
+  var command = ['rrdtool'].concat(args).join(' ');
+
+  var child = exec(command, function (error, stdout, stderr) {
+
+    try {
+      var last = parseFloat(stdout);
+      callback(null,last);
+    } catch (e) {
+      console.error("Error parsing last timestamp: ", e);
+      callback(error,null);
+    }
 
     if (error !== null) {
       callback(error,null);

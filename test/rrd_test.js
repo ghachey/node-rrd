@@ -5,7 +5,7 @@ var rrd = require('../rrd');
 
 describe('Fetching data from Round Robin Databases', function(){
 
-  describe('fetchData', function(){
+  describe('fetch', function(){
     it('fetches RRD data and encapsulates it in a simple format', function(done){
 
       var fetched_expected = [
@@ -2468,12 +2468,26 @@ describe('Fetching data from Round Robin Databases', function(){
         }
       ];
 
-      rrd.fetchData('test/db/sample-octets-data.rrd', 'AVERAGE',
+      rrd.fetch('test/db/sample-octets-data.rrd', 'AVERAGE',
                     {'--start': '1395994500', '--end': '1396076100'},
                     function(error, data) {
+                      console.log(data);
                       assert.deepEqual(data, fetched_expected);
                       done();
                     });
+
+    });
+  });
+
+  describe('last', function(){
+    it('should find the last update time of an RRD', function(done){
+
+      var last_expected = 1396076673;
+
+      rrd.last('test/db/sample-octets-data.rrd', function(error, data) {
+        assert.deepEqual(data, last_expected);
+        done();
+      });
 
     });
   });
