@@ -76,7 +76,7 @@ exports.last = function (filename, callback) {
       callback(null,last);
     } catch (e) {
       console.error("Error parsing last timestamp: ", e);
-      callback(error,null);
+      callback(e,null);
     }
 
     if (error !== null) {
