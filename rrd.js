@@ -86,3 +86,80 @@ exports.last = function (filename, callback) {
   });
 
 };
+
+/**
+ * @description
+ *
+ * Retrieve the information for a RRD databse. Not much thought was put into
+ * how to encapsulate the information from rrdtool info. All I need for now is
+ * the ability to get the resolution of the RRD. The rrdtool info outputs
+ * data such as rra[0].cf = 'AVERAGE' which I is simply stored as "rra[0].cf": "AVERAGE"
+ * in a JSON object. Should rrd be an array with small objects with key:value?
+ * will see if I ever get a need for it.
+ *
+ * @param {String} filename
+ * @return {Object} object of key values representing the RRD information
+ */
+exports.info = function (filename, callback) {
+
+  // args for use with spawn when I'll be streaming rrd updates lives
+  var args = ['info', filename];  // args for use with spawn...
+  // for now use exec and get fixed buffered output
+  var command = ['rrdtool'].concat(args).join(' ');
+
+  var child = exec(command, function (error, stdout, stderr) {
+
+    if (error !== null) {
+      callback(error,null);
+    }
+
+    var lines = stdout.split('\n');
+
+    var keyValues = _.filter(_.map(lines, function(line) {
+      return line.split(" = ");
+    }), function(line) {if (line!='') {return line}});
+
+    // Reduce the whole thing to our final object
+    var info = _.reduce(keyValues, function(memory, keyValue) {
+      memory[keyValue[0]] = clean(keyValue);
+      return memory;
+    }, {});
+
+    callback(null,info);
+
+  });
+
+};
+
+
+/**
+ * Rough and dirty cleanup utility function.
+ */
+var clean = function(keyValue) {
+
+  // Filename different depending on where rrdtool is called; strip path...
+  if (keyValue[0]=='filename') {
+    var fileNameTokens = keyValue[1].split('/');
+    keyValue[1] = fileNameTokens[fileNameTokens.length-1].replace(/"/g, "");
+    return keyValue[1];
+  }
+
+  // Strip off redundant double quotes
+  if (keyValue[1].search("\"")==0) {
+    return keyValue[1].replace(/"/g, "");
+  }
+
+  // Turn NaN into null for now
+  if (keyValue[1]=='NaN') {
+    return null;
+  }
+
+  // When possible to parse to number do so
+  try {
+    return parseFloat(keyValue[1]);
+  } catch (er) {
+    return keyValue[1];
+  }
+
+  return keyValue[1];
+};

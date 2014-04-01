@@ -3,7 +3,7 @@ var should = require('should');
 
 var rrd = require('../rrd');
 
-describe('Fetching data from Round Robin Databases', function(){
+describe('Querying Round Robin Databases', function(){
 
   describe('fetch', function(){
     it('fetches RRD data and encapsulates it in a simple format', function(done){
@@ -2469,12 +2469,11 @@ describe('Fetching data from Round Robin Databases', function(){
       ];
 
       rrd.fetch('test/db/sample-octets-data.rrd', 'AVERAGE',
-                    {'--start': '1395994500', '--end': '1396076100'},
-                    function(error, data) {
-                      console.log(data);
-                      assert.deepEqual(data, fetched_expected);
-                      done();
-                    });
+                {'--start': '1395994500', '--end': '1396076100'},
+                function(error, data) {
+                  assert.deepEqual(data, fetched_expected);
+                  done();
+                });
 
     });
   });
@@ -2486,6 +2485,68 @@ describe('Fetching data from Round Robin Databases', function(){
 
       rrd.last('test/db/sample-octets-data.rrd', function(error, data) {
         assert.deepEqual(data, last_expected);
+        done();
+      });
+
+    });
+  });
+
+  describe('info', function(){
+    it('should retrieve info from an RRD', function(done){
+
+      var info_expected = {
+        "filename": "sample-octets-data.rrd",
+        "rrd_version": "0003",
+        "step": 300,
+        "last_update": 1396076673,
+        "header_size": 1416,
+        "ds[ifInOctets].index": 0,
+        "ds[ifInOctets].type": "COUNTER",
+        "ds[ifInOctets].minimal_heartbeat": 600,
+        "ds[ifInOctets].min": null,
+        "ds[ifInOctets].max": null,
+        "ds[ifInOctets].last_ds": "+2.5746496250E09",
+        "ds[ifInOctets].value": 179091.62791,
+        "ds[ifInOctets].unknown_sec": 0,
+        "rra[0].cf": "AVERAGE",
+        "rra[0].rows": 2016,
+        "rra[0].cur_row": 0,
+        "rra[0].pdp_per_row": 1,
+        "rra[0].xff": 0.5,
+        "rra[0].cdp_prep[0].value": null,
+        "rra[0].cdp_prep[0].unknown_datapoints": 0,
+        "rra[1].cf": "AVERAGE",
+        "rra[1].rows": 1488,
+        "rra[1].cur_row": 0,
+        "rra[1].pdp_per_row": 12,
+        "rra[1].xff": 0.5,
+        "rra[1].cdp_prep[0].value": null,
+        "rra[1].cdp_prep[0].unknown_datapoints": 0,
+        "rra[2].cf": "AVERAGE",
+        "rra[2].rows": 366,
+        "rra[2].cur_row": 0,
+        "rra[2].pdp_per_row": 288,
+        "rra[2].xff": 0.5,
+        "rra[2].cdp_prep[0].value": 41647.520421,
+        "rra[2].cdp_prep[0].unknown_datapoints": 0,
+        "rra[3].cf": "MAX",
+        "rra[3].rows": 366,
+        "rra[3].cur_row": 0,
+        "rra[3].pdp_per_row": 288,
+        "rra[3].xff": 0.5,
+        "rra[3].cdp_prep[0].value": 949.97769742,
+        "rra[3].cdp_prep[0].unknown_datapoints": 0,
+        "rra[4].cf": "MIN",
+        "rra[4].rows": 366,
+        "rra[4].cur_row": 0,
+        "rra[4].pdp_per_row": 288,
+        "rra[4].xff": 0.5,
+        "rra[4].cdp_prep[0].value": 351.87818383,
+        "rra[4].cdp_prep[0].unknown_datapoints": 0
+      };
+
+      rrd.info('test/db/sample-octets-data.rrd', function(error, data) {
+        assert.deepEqual(data, info_expected);
         done();
       });
 
