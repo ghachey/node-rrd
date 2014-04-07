@@ -11,7 +11,9 @@ var exec = require('child_process').exec;
  * @param {String} filename
  * @param {String} CF the consolidation function
  * @param {Object} options parameters for the remaining, for example,
- *                 {start: '1395994500', end: '1396076100'}
+ *                 {start: '1395994500', end: '1396076100'}. You must pass null
+ *                 if you do not want to specify the options; rrdtool will
+ *                 choose defaults for you in that case.
  *
  */
 exports.fetch = function (filename, CF, options, callback) {
@@ -21,15 +23,15 @@ exports.fetch = function (filename, CF, options, callback) {
 
   var opts = _.flatten(_.zip(_.keys(options),_.values(options)));
   // args for use with spawn when I'll be streaming rrd updates lives
+  // should I even do that?! will rrd be able to update or will it lock?!
   var args = ['fetch', filename, CF].concat(opts);  // args for use with spawn...
   // for now use exec and get fixed buffered output
   var command = ['rrdtool'].concat(args).join(' ');
 
   var child = exec(command, function (error, stdout, stderr) {
 
-
     var rawData = stdout.split('\n');
-    var fieldNames = rawData.shift().trim().split(' ');
+    var fieldNames = rawData.shift().trim().split(/\s+/);
     var rawFiltered = _.filter(rawData,function(item) {if (item!='') {return item;}});
 
     var data = _.map(rawFiltered, function(item){
@@ -39,7 +41,13 @@ exports.fetch = function (filename, CF, options, callback) {
         var timestamp = recordData.shift();
         record['timestamp'] = parseFloat(timestamp.slice(0,timestamp.length-1));
         record['fields'] = fieldNames;
-        record['data'] = _.map(recordData,function(item){return parseFloat(item);});
+        record['data'] = _.map(recordData,function(item){
+          var val = parseFloat(item);
+          if (isNaN(val)) {
+            val = null;
+          }
+          return val;
+        });
         return record;
       }
     });
@@ -119,7 +127,6 @@ exports.info = function (filename, callback) {
       return line.split(" = ");
     }), function(line) {if (line!='') {return line}});
 
-    // Reduce the whole thing to our final object
     var info = _.reduce(keyValues, function(memory, keyValue) {
       memory[keyValue[0]] = clean(keyValue);
       return memory;

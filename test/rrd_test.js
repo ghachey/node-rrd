@@ -6,8 +6,8 @@ var rrd = require('../rrd');
 describe('Querying Round Robin Databases', function(){
 
   describe('fetch', function(){
-    it('fetches RRD data and encapsulates it in a simple format', function(done){
 
+    it('should fetch RRD data with single columns', function(done){
       var fetched_expected = [
         {
           "timestamp": 1395994800,
@@ -2467,33 +2467,362 @@ describe('Querying Round Robin Databases', function(){
           ]
         }
       ];
-
       rrd.fetch('test/db/sample-octets-data.rrd', 'AVERAGE',
                 {'--start': '1395994500', '--end': '1396076100'},
-                function(error, data) {
+                function(err, data) {
+                  if (err) console.log("err: ", err);
                   assert.deepEqual(data, fetched_expected);
                   done();
                 });
-
     });
+
+    it('should fetch RRD data with several columns', function(done){
+      var fetched_expected2 = [
+        {
+          "timestamp": 1396765500,
+          "fields": [
+            "uptime",
+            "loss",
+            "median",
+            "ping1",
+            "ping2",
+            "ping3",
+            "ping4",
+            "ping5",
+            "ping6",
+            "ping7",
+            "ping8",
+            "ping9",
+            "ping10",
+            "ping11",
+            "ping12",
+            "ping13",
+            "ping14",
+            "ping15",
+            "ping16",
+            "ping17",
+            "ping18",
+            "ping19",
+            "ping20"
+          ],
+          "data": [
+            null,
+            1,
+            0.3648662,
+            0.2654362,
+            0.2868898,
+            0.3065868,
+            0.3090074,
+            0.310756,
+            0.3172014,
+            0.3204068,
+            0.34334,
+            0.3635104,
+            0.3648662,
+            0.3666164,
+            0.3729216,
+            0.393684,
+            0.413541,
+            0.4522378,
+            0.4725966,
+            0.5206208,
+            0.5961714,
+            0.9487098,
+            null
+          ]
+        },
+        {
+          "timestamp": 1396765800,
+          "fields": [
+            "uptime",
+            "loss",
+            "median",
+            "ping1",
+            "ping2",
+            "ping3",
+            "ping4",
+            "ping5",
+            "ping6",
+            "ping7",
+            "ping8",
+            "ping9",
+            "ping10",
+            "ping11",
+            "ping12",
+            "ping13",
+            "ping14",
+            "ping15",
+            "ping16",
+            "ping17",
+            "ping18",
+            "ping19",
+            "ping20"
+          ],
+          "data": [
+            null,
+            1,
+            1.0826408,
+            0.398474,
+            0.400201,
+            0.6163774,
+            0.6539316,
+            0.6542446,
+            0.6759544,
+            0.7183642,
+            0.8625288,
+            0.9995706,
+            1.0826408,
+            1.089879,
+            1.1129684,
+            1.246742,
+            1.3143258,
+            1.3182042,
+            1.3219574,
+            1.3636394,
+            2.0137136,
+            2.220952,
+            null
+          ]
+        },
+        {
+          "timestamp": 1396766100,
+          "fields": [
+            "uptime",
+            "loss",
+            "median",
+            "ping1",
+            "ping2",
+            "ping3",
+            "ping4",
+            "ping5",
+            "ping6",
+            "ping7",
+            "ping8",
+            "ping9",
+            "ping10",
+            "ping11",
+            "ping12",
+            "ping13",
+            "ping14",
+            "ping15",
+            "ping16",
+            "ping17",
+            "ping18",
+            "ping19",
+            "ping20"
+          ],
+          "data": [
+            null,
+            0.016666666667,
+            0.28800716667,
+            0.25696466667,
+            0.2717465,
+            0.27609466667,
+            0.27731283333,
+            0.27745533333,
+            0.278196,
+            0.2802535,
+            0.28334633333,
+            0.285759,
+            0.28746633333,
+            0.28812966667,
+            0.2887955,
+            0.291094,
+            0.2924725,
+            0.29269233333,
+            0.2975085,
+            0.31062033333,
+            0.3386615,
+            0.36056016667,
+            0.36126
+          ]
+        },
+        {
+          "timestamp": 1396766400,
+          "fields": [
+            "uptime",
+            "loss",
+            "median",
+            "ping1",
+            "ping2",
+            "ping3",
+            "ping4",
+            "ping5",
+            "ping6",
+            "ping7",
+            "ping8",
+            "ping9",
+            "ping10",
+            "ping11",
+            "ping12",
+            "ping13",
+            "ping14",
+            "ping15",
+            "ping16",
+            "ping17",
+            "ping18",
+            "ping19",
+            "ping20"
+          ],
+          "data": [
+            null,
+            0,
+            0.4587652,
+            0.3002272,
+            0.3452546,
+            0.3797056,
+            0.3931532,
+            0.39345,
+            0.4052078,
+            0.4063424,
+            0.4086292,
+            0.4122374,
+            0.4246698,
+            0.4587652,
+            0.4952366,
+            0.5195804,
+            0.5230642,
+            0.6598658,
+            0.6610308,
+            0.6650074,
+            0.6681758,
+            0.7089084,
+            0.9303558
+          ]
+        },
+        {
+          "timestamp": 1396766700,
+          "fields": [
+            "uptime",
+            "loss",
+            "median",
+            "ping1",
+            "ping2",
+            "ping3",
+            "ping4",
+            "ping5",
+            "ping6",
+            "ping7",
+            "ping8",
+            "ping9",
+            "ping10",
+            "ping11",
+            "ping12",
+            "ping13",
+            "ping14",
+            "ping15",
+            "ping16",
+            "ping17",
+            "ping18",
+            "ping19",
+            "ping20"
+          ],
+          "data": [
+            null,
+            0,
+            0.4101196,
+            0.2947116,
+            0.2956342,
+            0.2964448,
+            0.310978,
+            0.3152764,
+            0.3201908,
+            0.3476828,
+            0.3548342,
+            0.3604252,
+            0.4010744,
+            0.4101196,
+            0.4144996,
+            0.537075,
+            0.6188192,
+            0.6646428,
+            0.6662718,
+            0.6672592,
+            0.6688162,
+            0.7057136,
+            0.7223912
+          ]
+        },
+        {
+          "timestamp": 1396767000,
+          "fields": [
+            "uptime",
+            "loss",
+            "median",
+            "ping1",
+            "ping2",
+            "ping3",
+            "ping4",
+            "ping5",
+            "ping6",
+            "ping7",
+            "ping8",
+            "ping9",
+            "ping10",
+            "ping11",
+            "ping12",
+            "ping13",
+            "ping14",
+            "ping15",
+            "ping16",
+            "ping17",
+            "ping18",
+            "ping19",
+            "ping20"
+          ],
+          "data": [
+            null,
+            0,
+            0.27628033333,
+            0.2549615,
+            0.2567415,
+            0.26377416667,
+            0.264469,
+            0.26570233333,
+            0.266952,
+            0.26812716667,
+            0.26937883333,
+            0.27220633333,
+            0.27538116667,
+            0.27628033333,
+            0.2800395,
+            0.29821283333,
+            0.30677033333,
+            0.312881,
+            0.31346883333,
+            0.32405516667,
+            0.5780265,
+            0.77659483333,
+            0.84627433333
+          ]
+        }
+      ];
+      rrd.fetch('test/db/sample-smokeping.rrd', 'AVERAGE',
+                {'--start': '1396765499', '--end': '1396766999'},
+                function(err, data) {
+                  if (err) console.log("err: ", err);
+                  assert.deepEqual(data, fetched_expected2);
+                  done();
+                });
+    });
+
   });
 
   describe('last', function(){
+
     it('should find the last update time of an RRD', function(done){
-
       var last_expected = 1396076673;
-
       rrd.last('test/db/sample-octets-data.rrd', function(error, data) {
         assert.deepEqual(data, last_expected);
         done();
       });
-
     });
+
   });
 
   describe('info', function(){
-    it('should retrieve info from an RRD', function(done){
 
+    it('should retrieve info from an RRD', function(done){
       var info_expected = {
         "filename": "sample-octets-data.rrd",
         "rrd_version": "0003",
@@ -2544,13 +2873,12 @@ describe('Querying Round Robin Databases', function(){
         "rra[4].cdp_prep[0].value": 351.87818383,
         "rra[4].cdp_prep[0].unknown_datapoints": 0
       };
-
       rrd.info('test/db/sample-octets-data.rrd', function(error, data) {
         assert.deepEqual(data, info_expected);
         done();
       });
-
     });
+
   });
 
 });
